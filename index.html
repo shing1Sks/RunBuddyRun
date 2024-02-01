@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Run Buddy Run</title>
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .container {
+        height: 400px;
+        width: 580px;
+        border: 2px solid black;
+        margin-top: 6%;
+        background-image: url("./game-res/Background.png");
+        display: flex;
+        flex-direction: column;
+      }
+      @media screen and (max-width: 609px) {
+        .container {
+          height: 400px;
+          width: 100%;
+        }
+      }
+      .gameA {
+        height: 320px;
+        width: 100%;
+        position: relative;
+      }
+      .base {
+        width: 100%;
+        height: 72px;
+        position: relative;
+        top: 6px;
+        display: flex;
+        flex-direction: row;
+      }
+      .player {
+        position: absolute;
+        bottom: 2px;
+        left: 2px;
+      }
+      .ground {
+        object-fit: contain;
+        height: 72px;
+      }
+      .obsticles {
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        height: 35px;
+      }
+      .lose{
+        position: absolute;
+        top: 40px;
+        left: 170px;
+        color: yellow;
+        text-align: center;
+        font-size: 80px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="gameA">
+        <p class="lose"></p>
+        <img class="player" />
+        <img class="obsticles" />
+      </div>
+      <div class="base">
+        <img class="ground" />
+        <img class="ground" />
+      </div>
+    </div>
+    <script>
+      let imgArrPlayer = [
+        "./game-res/Skeleton/run/r1.png",
+        "./game-res/Skeleton/run/r2.png",
+        "./game-res/Skeleton/run/r3.png",
+        "./game-res/Skeleton/run/r4.png",
+        "./game-res/Skeleton/run/r5.png",
+        "./game-res/Skeleton/run/r6.png",
+        "./game-res/Skeleton/run/r7.png",
+      ];
+
+      let imgArrObsticles = [
+        "./game-res/props/3 Objects/Benches/2.png",
+        "./game-res/props/3 Objects/Other/Box.png",
+        "./game-res/props/3 Objects/Stones/5.png",
+      ];
+
+      let movingBG = [];
+
+      const player = document.querySelector(".player");
+      let i = 0;
+      let imgPlayer = () => {
+        if (i == 7) {
+          i = 0;
+        }
+        player.src = imgArrPlayer[i];
+        i++;
+      };
+      let playerAct=setInterval(imgPlayer, 100);
+
+      //lose mechanics
+      let check=(pos)=>{
+            if(pos>477 && (player.style.bottom).slice(0,(player.style.bottom).length-2)<=6){
+                clearInterval(obsticleAct);
+                clearInterval(playerAct);
+                clearInterval(start);
+                document.querySelector(".lose").innerHTML="LOSER";
+            }
+      }
+
+      //jump mechanics 
+      document.body.onkeyup=(event)=>{
+        if(event.key==" " || event.code=="Space" || event.keyCode==32){
+            jum=setInterval(jump,1);
+        }
+      }
+      let jC=2;
+      function jump(){
+        if(jC<=100){
+            jC+=2;
+            player.style.bottom=`${jC}px`;
+            return;
+        }
+        if(jC>100 && jC<=200){
+            jC+=2;
+            player.style.bottom=`${200-jC}px`;
+            return; 
+        }
+        else{
+            jC=2;
+            clearInterval(jum); 
+        }
+
+      }
+      let jum=setInterval(jump,1);
+
+      //obsticle in motion
+      let pos = 0;
+      let motion = () => {
+        check(pos);
+        ob.style.right = `${pos++}px`;
+      };
+      let start = setInterval(motion, 10);
+
+      const ob = document.querySelector(".obsticles");
+      let j = 0;
+      let imgObsticles = () => {
+        pos=0;
+        ob.style.right = `0px`;
+        clearInterval(start);
+        if (j == 3) {
+          j = 0;
+        }
+        ob.src = imgArrObsticles[j];
+        j++;
+        start = setInterval(motion, 5);
+      };
+      let obsticleAct = setInterval(imgObsticles, 2550);
+
+      const ground = document.querySelectorAll(".ground");
+      ground[0].src = "./game-res/base.png";
+      ground[1].src = "./game-res/base.png";
+
+      //mobile support
+      document.querySelector(".gameA").addEventListener('click',()=>{jum=setInterval(jump,1);});
+
+      
+    </script>
+  </body>
+</html>
