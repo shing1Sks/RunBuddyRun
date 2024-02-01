@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Run Buddy Run</title>
     <style>
-      * {
+      *{
         margin: 0px;
         padding: 0px;
       }
@@ -13,30 +13,38 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        height: 90vh;
+        background-color: rgb(157, 153, 153);
       }
       .container {
         height: 400px;
         width: 580px;
-        border: 2px solid black;
-        margin-top: 6%;
         background-image: url("./game-res/Background.png");
+        background-size: cover;
         display: flex;
         flex-direction: column;
       }
-      @media screen and (max-width: 609px) {
+      @media screen and (max-width: 600px) {
         .container {
           height: 400px;
           width: 100%;
         }
+        .alternate{
+          width: 0px;
+        }
+        .ground{
+          width: 100%;
+        }
       }
       .gameA {
-        height: 320px;
+        height: 85%;
         width: 100%;
         position: relative;
       }
       .base {
         width: 100%;
-        height: 72px;
+        height: 12%;
         position: relative;
         top: 6px;
         display: flex;
@@ -48,10 +56,11 @@
         left: 2px;
       }
       .ground {
-        object-fit: contain;
-        height: 72px;
+        object-fit: cover;
+        height: 100%;
+        width: 50%;
       }
-      .obsticles {
+      .obsticles{
         position: absolute;
         right: 0px;
         bottom: 0px;
@@ -60,24 +69,42 @@
       .lose{
         position: absolute;
         top: 40px;
-        left: 170px;
+        left: 30%;
         color: yellow;
         text-align: center;
         font-size: 80px;
         font-weight: 800;
       }
+      .score{
+        position: absolute;
+        top: 120px;
+        left: 35%;
+        color: yellow;
+        text-align: center;
+        font-size: 60px;
+        font-weight: 700;
+      }
+      .heading{
+        color: rgb(177, 80, 80);
+        text-align: center;
+        font-size: 80px;
+        font-weight: 800;
+        text-shadow: rgba(128, 128, 128, 0.662) 4px 4px;
+      }
     </style>
   </head>
   <body>
+    <p class="heading">Run Buddy Run !</p>
     <div class="container">
       <div class="gameA">
         <p class="lose"></p>
+        <p class="score"></p>
         <img class="player" />
         <img class="obsticles" />
       </div>
       <div class="base">
         <img class="ground" />
-        <img class="ground" />
+        <img class="ground alternate" />
       </div>
     </div>
     <script>
@@ -112,11 +139,12 @@
 
       //lose mechanics
       let check=(pos)=>{
-            if(pos>477 && (player.style.bottom).slice(0,(player.style.bottom).length-2)<=6){
+            if(pos>(0.82)*document.querySelector(".container").clientWidth-6 && (player.style.bottom).slice(0,(player.style.bottom).length-2)<=6){
                 clearInterval(obsticleAct);
                 clearInterval(playerAct);
                 clearInterval(start);
                 document.querySelector(".lose").innerHTML="LOSER";
+                document.querySelector(".score").innerHTML=`score : ${score}`;
             }
       }
 
@@ -154,20 +182,23 @@
       };
       let start = setInterval(motion, 10);
 
+      //score
+      let score=-1;
       const ob = document.querySelector(".obsticles");
       let j = 0;
       let imgObsticles = () => {
         pos=0;
+        score++;
         ob.style.right = `0px`;
         clearInterval(start);
-        if (j == 3) {
+        if (j == 2) {
           j = 0;
         }
         ob.src = imgArrObsticles[j];
         j++;
         start = setInterval(motion, 5);
       };
-      let obsticleAct = setInterval(imgObsticles, 2550);
+      let obsticleAct = setInterval(imgObsticles, 2550*(document.querySelector(".container").clientWidth/580));
 
       const ground = document.querySelectorAll(".ground");
       ground[0].src = "./game-res/base.png";
