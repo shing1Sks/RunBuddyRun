@@ -87,7 +87,7 @@
       .heading{
         color: rgb(177, 80, 80);
         text-align: center;
-        font-size: 80px;
+        font-size: 70px;
         font-weight: 800;
         text-shadow: rgba(128, 128, 128, 0.662) 4px 4px;
       }
@@ -139,7 +139,7 @@
 
       //lose mechanics
       let check=(pos)=>{
-            if(pos>(0.82)*document.querySelector(".container").clientWidth-6 && (player.style.bottom).slice(0,(player.style.bottom).length-2)<=6){
+            if(pos>(0.84)*document.querySelector(".container").clientWidth-6 && (player.style.bottom).slice(0,(player.style.bottom).length-2)<=6){
                 clearInterval(obsticleAct);
                 clearInterval(playerAct);
                 clearInterval(start);
@@ -149,26 +149,31 @@
       }
 
       //jump mechanics 
+      let jumpOk=1;
       document.body.onkeyup=(event)=>{
         if(event.key==" " || event.code=="Space" || event.keyCode==32){
+          if(jumpOk==1){
             jum=setInterval(jump,1);
+          }
         }
       }
       let jC=2;
       function jump(){
-        if(jC<=100){
+        jumpOk=0;
+        if(jC<=80){
             jC+=2;
             player.style.bottom=`${jC}px`;
             return;
         }
-        if(jC>100 && jC<=200){
+        if(jC>80 && jC<=160){
             jC+=2;
-            player.style.bottom=`${200-jC}px`;
+            player.style.bottom=`${160-jC}px`;
             return; 
         }
         else{
             jC=2;
             clearInterval(jum); 
+            jumpOk=1;
         }
 
       }
@@ -181,6 +186,10 @@
         ob.style.right = `${pos++}px`;
       };
       let start = setInterval(motion, 10);
+
+      //difficulty
+      let diff=5;
+      let diffi=setInterval(()=>{diff--;},6000);
 
       //score
       let score=-1;
@@ -196,7 +205,7 @@
         }
         ob.src = imgArrObsticles[j];
         j++;
-        start = setInterval(motion, 5);
+        start = setInterval(motion, diff);
       };
       let obsticleAct = setInterval(imgObsticles, 2550*(document.querySelector(".container").clientWidth/580));
 
